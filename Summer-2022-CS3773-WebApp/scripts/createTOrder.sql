@@ -6,6 +6,7 @@ CREATE TABLE `TOrder` (
   `totalPriceCents` int         NOT NULL,
   `status`          int         NOT NULL,
   `orderDt`         date        NOT NULL,
+  `deliverDt`       date        DEFAULT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`custId`) REFERENCES Customer (`id`)
 );
