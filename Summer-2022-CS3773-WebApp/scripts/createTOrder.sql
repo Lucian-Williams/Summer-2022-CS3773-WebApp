@@ -1,12 +1,14 @@
 -- createTOrder.sql
 drop table if exists TOrder;
 CREATE TABLE `TOrder` (
-  `id`              int         NOT NULL,
-  `custId`          int         NOT NULL,
-  `totalPriceCents` int         NOT NULL,
-  `status`          int         NOT NULL,
-  `orderDt`         date        NOT NULL,
-  `deliverDt`       date        DEFAULT NULL,
+  `id`              integer     NOT NULL,
+  `custId`          integer     NOT NULL,
+  `totalPriceCents` integer     NOT NULL,
+  `status`          integer     NOT NULL,
+  `discountCode`    text        DEFAULT NULL,
+  `orderDt`         text        NOT NULL,
+  `deliverDt`       text        DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`custId`) REFERENCES Customer (`id`)
+  FOREIGN KEY (`custId`) REFERENCES Customer (`id`),
+  FOREIGN KEY (`discountCode`) REFERENCES Discount (`code`)
 );

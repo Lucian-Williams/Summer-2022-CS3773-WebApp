@@ -1,9 +1,8 @@
 -- createAdmin.sql
 drop table if exists Admin;
 CREATE TABLE `Admin` (
-  `id`              int         NOT NULL,
-  `name`            varchar(30) NOT NULL,
-  `salt`            int         NOT NULL,
-  `verifier`        int         NOT NULL,
+  `id`              integer     NOT NULL,
+  `name`            text        NOT NULL, -- use name as salt
+  `verifier`        integer     NOT NULL,
   PRIMARY KEY (`id`)
 );
