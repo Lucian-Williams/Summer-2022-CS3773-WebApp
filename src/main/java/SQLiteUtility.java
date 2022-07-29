@@ -1,3 +1,4 @@
+import java.awt.image.BufferedImage;
 import java.sql.*;
 import java.sql.SQLException;
 
@@ -16,7 +17,20 @@ public class SQLiteUtility {
         connection.close();
     }
 
-    public static void insertItem(Item item) {
-
+    public static void insertItem(String name, int itemType, int stock, int priceCents, String imagePath) {
+        if (name == null || imagePath == null)
+            return;
+        try {
+            preparedStatement = connection.prepareStatement("INSERT INTO Item (name, itemType, stock, pricecents, imagepath) VALUES(?, ?, ?, ?, ?)");
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, itemType);
+            preparedStatement.setInt(3, stock);
+            preparedStatement.setInt(4, priceCents);
+            preparedStatement.setString(5, imagePath);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

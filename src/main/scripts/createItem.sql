@@ -6,5 +6,5 @@ CREATE TABLE `Item` (
   `itemType`        integer     DEFAULT NULL,
   `stock`           integer     DEFAULT 0 NOT NULL, 
   `pricecents`      integer     NOT NULL,
-  `image`           blob        DEFAULT NULL
+  `imagepath`       text        DEFAULT NULL
 );
