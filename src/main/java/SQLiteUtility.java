@@ -1,6 +1,7 @@
 import java.awt.image.BufferedImage;
 import java.sql.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class SQLiteUtility {
     private static Connection connection = null;
@@ -17,62 +18,55 @@ public class SQLiteUtility {
         connection.close();
     }
 
-    public static void insertAdmin(String name, int verifier) {
+    public static int insertAdmin(String name, int verifier) {
+        int retVal;
+        ResultSet resultSet;
         if (name == null)
-            return;
+            return -1;
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO Admin (name, verifier) VALUES(?, ?)");
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, verifier);
             preparedStatement.executeUpdate();
             preparedStatement.close();
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT last_insert_rowid()");
+            retVal = resultSet.getInt(1);
+            resultSet.close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
+
+        return retVal;
     }
 
-    public static void insertCustomer(String name, String state, String birthDt, String creatDt, String gender) {
-        if (name == null ||
-                state == null ||
-                birthDt == null ||
-                creatDt == null ||
-                gender == null) {
-            return;
-        }
+    public static int insertDiscount(String code, int percentOff, String startDt, String expireDt) {
+        if (code == null || startDt == null || expireDt == null)
+            return -1;
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO Customer (name, state, birthDt, creatDt, gender) VALUES(?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, state);
-            preparedStatement.setString(3, birthDt);
-            preparedStatement.setString(4, creatDt);
-            preparedStatement.setString(5, gender);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void insertDiscount(String code, int percentOff, int maxDollarAmount, int status, String expireDt) {
-        if (code == null || expireDt == null)
-            return;
-        try {
-            preparedStatement = connection.prepareStatement("INSERT INTO Discount (code, percentOff, maxDollarAmount, status, expireDt) VALUES(?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO Discount (code, percentOff, startDt, expireDt) VALUES(?, ?, ?, ?)");
             preparedStatement.setString(1, code);
             preparedStatement.setInt(2, percentOff);
-            preparedStatement.setInt(3, maxDollarAmount);
-            preparedStatement.setInt(4, status);
-            preparedStatement.setString(5, expireDt);
+            preparedStatement.setString(3, startDt);
+            preparedStatement.setString(4, expireDt);
             preparedStatement.executeUpdate();
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
+
+        return 0;
     }
 
-    public static void insertItem(String name, int itemType, int stock, int priceCents, String imagePath) {
+    public static int insertItem(String name, int itemType, int stock, int priceCents, String imagePath) {
+        int retVal;
+        ResultSet resultSet;
         if (name == null || imagePath == null)
-            return;
+            return -1;
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO Item (name, itemType, stock, pricecents, imagepath) VALUES(?, ?, ?, ?, ?)");
             preparedStatement.setString(1, name);
@@ -82,31 +76,23 @@ public class SQLiteUtility {
             preparedStatement.setString(5, imagePath);
             preparedStatement.executeUpdate();
             preparedStatement.close();
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT last_insert_rowid()");
+            retVal = resultSet.getInt(1);
+            resultSet.close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
+
+        return retVal;
     }
 
-    public static void insertOrder(int custId, int totalPriceCents, int status, String discountCode, String orderDt) {
-        if (discountCode == null || orderDt == null)
-            return;
-        try {
-            preparedStatement = connection.prepareStatement("INSERT INTO TOrder (custId, totalPriceCents, status, discountCode, orderDt) VALUES(?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, custId);
-            preparedStatement.setInt(2, totalPriceCents);
-            preparedStatement.setInt(3, status);
-            preparedStatement.setString(4, discountCode);
-            preparedStatement.setString(5, orderDt);
-            preparedStatement.executeUpdate();
-            preparedStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void insertSale(int itemId, int percentOff, String startDt, String expireDt) {
+    public static int insertSale(int itemId, int percentOff, String startDt, String expireDt) {
         if (startDt == null || expireDt == null)
-            return;
+            return -1;
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO Sale (itemId, percentOff, startDt, expireDt) VALUES(?, ?, ?, ?)");
             preparedStatement.setInt(1, itemId);
@@ -117,6 +103,9 @@ public class SQLiteUtility {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            return -1;
         }
+
+        return 0;
     }
 }
