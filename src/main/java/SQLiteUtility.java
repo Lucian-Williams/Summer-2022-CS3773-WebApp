@@ -62,18 +62,17 @@ public class SQLiteUtility {
         return 0;
     }
 
-    public static int insertItem(String name, int itemType, int stock, int priceCents, String imagePath) {
+    public static int insertItem(String name, int stock, int priceCents, String imagePath) {
         int retVal;
         ResultSet resultSet;
         if (name == null || imagePath == null)
             return -1;
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO Item (name, itemType, stock, pricecents, imagepath) VALUES(?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO Item (name, stock, pricecents, imagepath) VALUES(?, ?, ?, ?)");
             preparedStatement.setString(1, name);
-            preparedStatement.setInt(2, itemType);
-            preparedStatement.setInt(3, stock);
-            preparedStatement.setInt(4, priceCents);
-            preparedStatement.setString(5, imagePath);
+            preparedStatement.setInt(2, stock);
+            preparedStatement.setInt(3, priceCents);
+            preparedStatement.setString(4, imagePath);
             preparedStatement.executeUpdate();
             preparedStatement.close();
 
