@@ -270,7 +270,7 @@ public class SQLiteUtility {
     }
 
     public static Admin[] getAdmins(int offset, int count, String orderField, SortDirection sortDirection) {
-        Admin[] admin = new Admin[count];
+        Admin[] admins = new Admin[count];
         String sortD;
         int finalCount = 0;
         switch (sortDirection) {
@@ -293,7 +293,7 @@ public class SQLiteUtility {
             preparedStatement.setInt(3, offset);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                admin[finalCount] = new Admin(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3));
+                admins[finalCount] = new Admin(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3));
                 finalCount++;
             }
             resultSet.close();
@@ -304,13 +304,243 @@ public class SQLiteUtility {
         }
 
         if (finalCount < count) {
-            Admin[] temp = admin;
-            admin = new Admin[finalCount];
+            Admin[] temp = admins;
+            admins = new Admin[finalCount];
             for (int j = 0; j < finalCount; j++) {
-                admin[j] = temp[j];
+                admins[j] = temp[j];
             }
         }
 
-        return admin;
+        return admins;
+    }
+
+    public static Customer[] getCustomers(int offset, int count, String orderField, SortDirection sortDirection) {
+        Customer[] customers = new Customer[count];
+        String sortD;
+        int finalCount = 0;
+        switch (sortDirection) {
+            case ASCENDING -> {
+                sortD = "ASC";
+                break;
+            }
+            case DESCENDING -> {
+                sortD = "DESC";
+                break;
+            }
+            default -> {
+                return null;
+            }
+        }
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM Customer ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setString(1, orderField);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, offset);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                customers[finalCount] = new Customer(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
+                finalCount++;
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (finalCount < count) {
+            Customer[] temp = customers;
+            customers = new Customer[finalCount];
+            for (int j = 0; j < finalCount; j++) {
+                customers[j] = temp[j];
+            }
+        }
+
+        return customers;
+    }
+
+    public static DiscountCode[] getDiscountCodes(int offset, int count, String orderField, SortDirection sortDirection) {
+        DiscountCode[] discountCodes = new DiscountCode[count];
+        String sortD;
+        int finalCount = 0;
+        switch (sortDirection) {
+            case ASCENDING -> {
+                sortD = "ASC";
+                break;
+            }
+            case DESCENDING -> {
+                sortD = "DESC";
+                break;
+            }
+            default -> {
+                return null;
+            }
+        }
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM Discount ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setString(1, orderField);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, offset);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                discountCodes[finalCount] = new DiscountCode(resultSet.getString(1), resultSet.getInt(2), resultSet.getString(3),
+                        resultSet.getString(4));
+                finalCount++;
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (finalCount < count) {
+            DiscountCode[] temp = discountCodes;
+            discountCodes = new DiscountCode[finalCount];
+            for (int j = 0; j < finalCount; j++) {
+                discountCodes[j] = temp[j];
+            }
+        }
+
+        return discountCodes;
+    }
+
+    public static Item[] getItems(int offset, int count, String orderField, SortDirection sortDirection) {
+        Item[] items = new Item[count];
+        String sortD;
+        int finalCount = 0;
+        switch (sortDirection) {
+            case ASCENDING -> {
+                sortD = "ASC";
+                break;
+            }
+            case DESCENDING -> {
+                sortD = "DESC";
+                break;
+            }
+            default -> {
+                return null;
+            }
+        }
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM Item ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setString(1, orderField);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, offset);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                items[finalCount] = new Item(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
+                        resultSet.getInt(4), resultSet.getString(5));
+                finalCount++;
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (finalCount < count) {
+            Item[] temp = items;
+            items = new Item[finalCount];
+            for (int j = 0; j < finalCount; j++) {
+                items[j] = temp[j];
+            }
+        }
+
+        return items;
+    }
+
+    public static Sale[] getSales(int offset, int count, String orderField, SortDirection sortDirection) {
+        Sale[] sales = new Sale[count];
+        String sortD;
+        int finalCount = 0;
+        switch (sortDirection) {
+            case ASCENDING -> {
+                sortD = "ASC";
+                break;
+            }
+            case DESCENDING -> {
+                sortD = "DESC";
+                break;
+            }
+            default -> {
+                return null;
+            }
+        }
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM Sale ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setString(1, orderField);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, offset);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                sales[finalCount] = new Sale(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3),
+                        resultSet.getString(4));
+                finalCount++;
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (finalCount < count) {
+            Sale[] temp = sales;
+            sales = new Sale[finalCount];
+            for (int j = 0; j < finalCount; j++) {
+                sales[j] = temp[j];
+            }
+        }
+
+        return sales;
+    }
+
+    public static Order[] getOrders(int offset, int count, String orderField, SortDirection sortDirection) {
+        Order[] orders = new Order[count];
+        String sortD;
+        int finalCount = 0;
+        switch (sortDirection) {
+            case ASCENDING -> {
+                sortD = "ASC";
+                break;
+            }
+            case DESCENDING -> {
+                sortD = "DESC";
+                break;
+            }
+            default -> {
+                return null;
+            }
+        }
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM TOrder ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setString(1, orderField);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, offset);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                orders[finalCount] = new Order(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
+                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
+                finalCount++;
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (finalCount < count) {
+            Order[] temp = orders;
+            orders = new Order[finalCount];
+            for (int j = 0; j < finalCount; j++) {
+                orders[j] = temp[j];
+            }
+        }
+
+        return orders;
     }
 }
