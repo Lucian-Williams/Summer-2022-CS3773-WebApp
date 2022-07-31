@@ -11,6 +11,7 @@ public class Main {
             System.out.println(SQLiteUtility.insertItem("Fancy Chess Queen", 200, 1000,
                 System.getProperty("user.dir") + "\\src\\main\\resources\\fancy_chess_queen.png"));
             System.out.println(SQLiteUtility.insertSale(1, 20, java.time.LocalDate.now().toString(), "2022-8-2"));
+            System.out.println(SQLiteUtility.updateItem(1, "Chess Queen", null, 500, null));
             SQLiteUtility.disconnect();
         } catch (Exception e) {
             e.printStackTrace();

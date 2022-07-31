@@ -107,4 +107,58 @@ public class SQLiteUtility {
 
         return 0;
     }
+
+    public static int updateItem(int id, String name, Integer stock, Integer priceCents, String imagePath) {
+        String start = "UPDATE Item SET ";
+        String end = " WHERE id == ?";
+        String sets = "";
+        int countChanges = 0;
+        if (name != null) {
+            countChanges++;
+            sets = sets + "name = ?, ";
+        }
+        if (stock != null) {
+            countChanges++;
+            sets = sets + "stock = ?, ";
+        }
+        if (priceCents != null) {
+            countChanges++;
+            sets = sets + "pricecents = ?, ";
+        }
+        if (imagePath != null) {
+            countChanges++;
+            sets = sets + "imagepath = ?, ";
+        }
+        if (countChanges == 0)
+            return -1;
+        sets = sets.substring(0, sets.length() - 2);
+        try {
+            preparedStatement = connection.prepareStatement(start + sets + end);
+            int i = 1;
+            if (name != null) {
+                preparedStatement.setString(i, name);
+                i++;
+            }
+            if (stock != null) {
+                preparedStatement.setInt(i, stock);
+                i++;
+            }
+            if (priceCents != null) {
+                preparedStatement.setInt(i, priceCents);
+                i++;
+            }
+            if (imagePath != null) {
+                preparedStatement.setString(i, imagePath);
+                i++;
+            }
+            preparedStatement.setInt(i, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return 0;
+    }
 }
