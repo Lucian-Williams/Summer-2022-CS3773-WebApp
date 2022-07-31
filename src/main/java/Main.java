@@ -20,13 +20,20 @@ public class Main {
                 System.out.println();
                 System.out.println(item);
             }
-            Admin[] admins = SQLiteUtility.getAdmins(0, 3, "id", SortDirection.ASCENDING);
+            Admin[] admins = SQLiteUtility.getAdmins(0, 3, "name", SortDirection.ASCENDING);
             if (admins == null) {
                 System.out.println("getAdmins failed.");
             } else {
                 for (int i = 0; i < admins.length; i++) {
                     System.out.println(admins[i]);
                 }
+            }
+            System.out.println(SQLiteUtility.getOrder(1));
+            System.out.println("--------------START TEST-------------");
+            Order[] orders = SQLiteUtility.getOrders(0, 8, "totalPriceCents", SortDirection.DESCENDING);
+            for (int i = 0; i < orders.length; i++) {
+                System.out.println();
+                System.out.println(orders[i]);
             }
             SQLiteUtility.disconnect();
         } catch (Exception e) {

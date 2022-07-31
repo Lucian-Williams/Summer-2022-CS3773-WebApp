@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 enum SortDirection {
     ASCENDING,
@@ -252,13 +253,24 @@ public class SQLiteUtility {
     }
 
     public static Order getOrder(int id) {
-        Order order;
+        ArrayList<Item> items = new ArrayList<Item>();
+        Order order = null;
+        int test = 0;
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM TOrder WHERE id = ?");
+            preparedStatement = connection.prepareStatement("SELECT * FROM TOrder o JOIN ItemsToOrders t JOIN Item i ON o.id = t.orderId AND " +
+                    "t.itemId = i.id WHERE o.id = ?");
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            order = new Order(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                    resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
+            while (resultSet.next()) {
+                if (test == 0) {
+                    order = new Order(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
+                            resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                            resultSet.getString(7), items);
+                    test++;
+                }
+                items.add(new Item(resultSet.getInt(11), resultSet.getString(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getString(15)));
+            }
             resultSet.close();
             preparedStatement.close();
         } catch (SQLException e) {
@@ -287,10 +299,9 @@ public class SQLiteUtility {
             }
         }
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM Admin ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
-            preparedStatement.setString(1, orderField);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, offset);
+            preparedStatement = connection.prepareStatement("SELECT * FROM Admin ORDER BY " + orderField + " " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setInt(1, count);
+            preparedStatement.setInt(2, offset);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 admins[finalCount] = new Admin(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3));
@@ -332,10 +343,9 @@ public class SQLiteUtility {
             }
         }
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM Customer ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
-            preparedStatement.setString(1, orderField);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, offset);
+            preparedStatement = connection.prepareStatement("SELECT * FROM Customer ORDER BY " + orderField + " " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setInt(1, count);
+            preparedStatement.setInt(2, offset);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 customers[finalCount] = new Customer(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3),
@@ -378,10 +388,9 @@ public class SQLiteUtility {
             }
         }
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM Discount ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
-            preparedStatement.setString(1, orderField);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, offset);
+            preparedStatement = connection.prepareStatement("SELECT * FROM Discount ORDER BY " + orderField + " " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setInt(1, count);
+            preparedStatement.setInt(2, offset);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 discountCodes[finalCount] = new DiscountCode(resultSet.getString(1), resultSet.getInt(2), resultSet.getString(3),
@@ -424,10 +433,9 @@ public class SQLiteUtility {
             }
         }
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM Item ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
-            preparedStatement.setString(1, orderField);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, offset);
+            preparedStatement = connection.prepareStatement("SELECT * FROM Item ORDER BY " + orderField + " " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setInt(1, count);
+            preparedStatement.setInt(2, offset);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 items[finalCount] = new Item(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3),
@@ -470,10 +478,9 @@ public class SQLiteUtility {
             }
         }
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM Sale ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
-            preparedStatement.setString(1, orderField);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, offset);
+            preparedStatement = connection.prepareStatement("SELECT * FROM Sale ORDER BY " + orderField + " " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setInt(1, count);
+            preparedStatement.setInt(2, offset);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 sales[finalCount] = new Sale(resultSet.getInt(1), resultSet.getInt(2), resultSet.getString(3),
@@ -500,8 +507,9 @@ public class SQLiteUtility {
 
     public static Order[] getOrders(int offset, int count, String orderField, SortDirection sortDirection) {
         Order[] orders = new Order[count];
+        int curId = 0;
         String sortD;
-        int finalCount = 0;
+        int finalCount = -1;
         switch (sortDirection) {
             case ASCENDING -> {
                 sortD = "ASC";
@@ -516,16 +524,26 @@ public class SQLiteUtility {
             }
         }
         try {
-            preparedStatement = connection.prepareStatement("SELECT * FROM TOrder ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
-            preparedStatement.setString(1, orderField);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, offset);
+            preparedStatement = connection.prepareStatement("SELECT * FROM (SELECT * FROM TOrder " +
+                    "LIMIT ? OFFSET ?) o JOIN ItemsToOrders t JOIN Item i ON o.id = t.orderId AND t.itemId = i.id ORDER BY o." +
+                    orderField + " " + sortD);
+            preparedStatement.setInt(1, count);
+            preparedStatement.setInt(2, offset);
             resultSet = preparedStatement.executeQuery();
+            ArrayList<Item> curItems = new ArrayList<Item>();
             while (resultSet.next()) {
-                orders[finalCount] = new Order(resultSet.getInt(1), resultSet.getInt(2), resultSet.getInt(3),
-                        resultSet.getString(4), resultSet.getString(5), resultSet.getString(6), resultSet.getString(7));
-                finalCount++;
+                if (resultSet.getInt(1) != curId) {
+                    curId = resultSet.getInt(1);
+                    curItems = new ArrayList<Item>();
+                    finalCount++;
+                    orders[finalCount] = new Order(curId, resultSet.getInt(2), resultSet.getInt(3),
+                            resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                            resultSet.getString(7), curItems);
+                }
+                curItems.add(new Item(resultSet.getInt(11), resultSet.getString(12), resultSet.getInt(13),
+                        resultSet.getInt(14), resultSet.getString(15)));
             }
+            finalCount++;
             resultSet.close();
             preparedStatement.close();
         } catch (SQLException e) {
