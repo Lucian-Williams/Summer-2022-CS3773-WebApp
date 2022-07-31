@@ -35,6 +35,6 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item{}";
+        return "Item{\n    " + id + ",\n    " + name + ",\n    " + stock + ",\n    " + priceCents + ",\n    " + imagePath + "\n}";
     }
 }

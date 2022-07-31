@@ -9,8 +9,20 @@ public class Admin {
         this.verifier = verifier;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getVerifier() {
+        return verifier;
+    }
+
     @Override
     public String toString() {
-        return "Admin{}";
+        return "Admin{\n    " + id + ",\n    " + name + ",\n    " + verifier + "\n}";
     }
 }

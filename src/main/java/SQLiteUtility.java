@@ -1,8 +1,10 @@
-import javax.xml.transform.Result;
-import java.awt.image.BufferedImage;
 import java.sql.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
+
+enum SortDirection {
+    ASCENDING,
+    DESCENDING
+}
 
 public class SQLiteUtility {
     private static Connection connection = null;
@@ -265,5 +267,50 @@ public class SQLiteUtility {
         }
 
         return order;
+    }
+
+    public static Admin[] getAdmins(int offset, int count, String orderField, SortDirection sortDirection) {
+        Admin[] admin = new Admin[count];
+        String sortD;
+        int finalCount = 0;
+        switch (sortDirection) {
+            case ASCENDING -> {
+                sortD = "ASC";
+                break;
+            }
+            case DESCENDING -> {
+                sortD = "DESC";
+                break;
+            }
+            default -> {
+                return null;
+            }
+        }
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM Admin ORDER BY ? " + sortD + " LIMIT ? OFFSET ?");
+            preparedStatement.setString(1, orderField);
+            preparedStatement.setInt(2, count);
+            preparedStatement.setInt(3, offset);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                admin[finalCount] = new Admin(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3));
+                finalCount++;
+            }
+            resultSet.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (finalCount < count) {
+            Admin[] temp = admin;
+            admin = new Admin[finalCount];
+            for (int j = 0; j < finalCount; j++) {
+                admin[j] = temp[j];
+            }
+        }
+
+        return admin;
     }
 }
