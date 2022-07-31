@@ -108,6 +108,23 @@ public class SQLiteUtility {
         return 0;
     }
 
+    public static int updateCustomer(int id, String status) {
+        if (status == null)
+            return -1;
+        try {
+            preparedStatement = connection.prepareStatement("UPDATE Customer SET status = ? WHERE id = ?");
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return 0;
+    }
+
     public static int updateItem(int id, String name, Integer stock, Integer priceCents, String imagePath) {
         String start = "UPDATE Item SET ";
         String end = " WHERE id == ?";
