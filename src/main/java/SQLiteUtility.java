@@ -1,3 +1,5 @@
+import cs3773.application.data.entity.Item;
+
 import java.sql.*;
 import java.sql.SQLException;
 
