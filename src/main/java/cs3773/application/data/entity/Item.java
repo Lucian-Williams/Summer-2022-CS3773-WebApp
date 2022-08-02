@@ -2,11 +2,13 @@ package cs3773.application.data.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import java.text.DecimalFormat;
 
 @Entity
 public class Item extends AbstractEntity {
 
     private String name;
+    private String status;
     private Integer stock;
     private String itemType;
     private double price;
@@ -19,6 +21,15 @@ public class Item extends AbstractEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Integer getStock() {
         return stock;
     }
@@ -32,7 +43,11 @@ public class Item extends AbstractEntity {
         this.itemType = itemType;
     }
     public double getPrice() {
-        return price;
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        double formatted = Double.parseDouble(df.format(price));
+
+        return formatted;
     }
     public void setPrice(double price) {
         this.price = price;
