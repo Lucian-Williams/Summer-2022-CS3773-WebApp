@@ -49,6 +49,7 @@ public class User extends AbstractEntity {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+    public void clearRoles(){roles.clear();}
     public String getProfilePictureUrl() {
         return profilePictureUrl;
     }

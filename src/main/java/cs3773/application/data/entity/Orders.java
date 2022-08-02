@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 public class Orders extends AbstractEntity {
 
     private Integer custId;
-    private Integer totalPrice;
+    private double totalPrice;
     private String status;
     private LocalDate orderDate;
     private LocalDate deliveryDate;
@@ -21,10 +21,10 @@ public class Orders extends AbstractEntity {
     public void setCustId(Integer custId) {
         this.custId = custId;
     }
-    public Integer getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
-    public void setTotalPrice(Integer totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
     public String getStatus() {

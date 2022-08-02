@@ -125,10 +125,10 @@ public class DataGenerator {
 
             while(discountRs.next()){
                 DiscountCode discountCode = new DiscountCode();
-                discountCode.setCode(discountRs.getInt(1));
+                //discountCode.setCode(discountRs.getInt(1));
                 discountCode.setPercentOff(discountRs.getInt(2));
                 discountCode.setMaxDollarAmount(discountRs.getInt(3));
-                discountCode.setStatus(discountRs.getInt(4));
+                //discountCode.setStatus(discountRs.getInt(4));
                 discountCode.setExpirationDate(LocalDate.parse(discountRs.getString(5)));
             }
 

@@ -6,16 +6,16 @@ import javax.persistence.Entity;
 @Entity
 public class DiscountCode extends AbstractEntity {
 
-    private Integer code;
+    private String code;
     private Integer percentOff;
-    private Integer maxDollarAmount;
-    private Integer status;
+    private double maxDollarAmount;
+    private String status;
     private LocalDate expirationDate;
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
-    public void setCode(Integer code) {
+    public void setCode(String code) {
         this.code = code;
     }
     public Integer getPercentOff() {
@@ -24,16 +24,16 @@ public class DiscountCode extends AbstractEntity {
     public void setPercentOff(Integer percentOff) {
         this.percentOff = percentOff;
     }
-    public Integer getMaxDollarAmount() {
+    public double getMaxDollarAmount() {
         return maxDollarAmount;
     }
-    public void setMaxDollarAmount(Integer maxDollarAmount) {
+    public void setMaxDollarAmount(double maxDollarAmount) {
         this.maxDollarAmount = maxDollarAmount;
     }
-    public Integer getStatus() {
+    public String getStatus() {
         return status;
     }
-    public void setStatus(Integer status) {
+    public void setStatus(String status) {
         this.status = status;
     }
     public LocalDate getExpirationDate() {
