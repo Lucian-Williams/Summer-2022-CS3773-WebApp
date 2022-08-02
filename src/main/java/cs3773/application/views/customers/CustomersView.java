@@ -149,6 +149,7 @@ public class CustomersView extends Div implements BeforeEnterObserver {
         name = new TextField("Name");
         state = new TextField("State");
         birthDate = new TextField("Birth Date");
+        birthDate.setPlaceholder("MM-DD-YYYY");
         createDate = new DatePicker("Create Date");
         gender = new TextField("Gender");
         Component[] fields = new Component[]{name, state, birthDate, createDate, gender};

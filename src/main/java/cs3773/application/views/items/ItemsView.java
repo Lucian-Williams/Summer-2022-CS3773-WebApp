@@ -5,11 +5,13 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
@@ -33,11 +35,12 @@ import cs3773.application.views.MainLayout;
 import elemental.json.Json;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Optional;
-import java.util.UUID;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.*;
 import javax.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.util.UriUtils;
 
@@ -52,7 +55,10 @@ public class ItemsView extends Div implements BeforeEnterObserver {
 
     private Grid<Item> grid = new Grid<>(Item.class, false);
 
+    private TextField id;
     private TextField name;
+
+    private TextField status;
     private TextField stock;
     private TextField itemType;
     private TextField price;
@@ -85,17 +91,25 @@ public class ItemsView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
+        //grid.addColumn("id").setAutoWidth(true);
         grid.addColumn("name").setAutoWidth(true);
         grid.addColumn("stock").setAutoWidth(true);
+        grid.addColumn("status").setAutoWidth(true);
         grid.addColumn("itemType").setAutoWidth(true);
 
+        //Decimal format for currency column
+        final DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(2);
 
-        LitRenderer<Item> priceRenderer = LitRenderer.<Item>of("$ ").withProperty("price", Item::getPrice);
-        grid.addColumn("price").setAutoWidth(true);
+        grid.addColumn(item -> "$ " + decimalFormat.format(item.getPrice()))
+                .setAutoWidth(true)
+                .setComparator(Comparator.comparing(Item::getPrice))
+                .setHeader("Price");
 
         LitRenderer<Item> imgURLRenderer = LitRenderer.<Item>of("<img style='height: 64px' src=${item.imgURL} />")
                 .withProperty("imgURL", Item::getImgURL);
-        grid.addColumn(imgURLRenderer).setHeader("Img URL").setWidth("68px").setFlexGrow(0);
+        grid.addColumn(imgURLRenderer).setHeader("Image").setWidth("68px").setAutoWidth(true);
 
         grid.setItems(query -> itemService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)))
@@ -166,6 +180,8 @@ public class ItemsView extends Div implements BeforeEnterObserver {
         }
     }
 
+
+
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setClassName("editor-layout");
@@ -175,17 +191,21 @@ public class ItemsView extends Div implements BeforeEnterObserver {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        id = new TextField("ID");
+        id.setReadOnly(true);
         name = new TextField("Name");
+        status = new TextField("Status");
         stock = new TextField("Stock");
         itemType = new TextField("Item Type");
         price = new TextField("Price");
+        price.setPrefixComponent(new Icon("vaadin", "dollar"));
         Label imgURLLabel = new Label("Img URL");
         imgURLPreview = new Image();
         imgURLPreview.setWidth("100%");
         imgURL = new Upload();
         imgURL.getStyle().set("box-sizing", "border-box");
         imgURL.getElement().appendChild(imgURLPreview.getElement());
-        Component[] fields = new Component[]{name, stock, itemType, price, imgURLLabel, imgURL};
+        Component[] fields = new Component[]{id, name, status, stock, itemType, price, imgURLLabel, imgURL};
 
         formLayout.add(fields);
         editorDiv.add(formLayout);

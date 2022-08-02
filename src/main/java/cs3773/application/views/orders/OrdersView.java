@@ -21,9 +21,13 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import cs3773.application.data.entity.Item;
 import cs3773.application.data.entity.Orders;
 import cs3773.application.data.service.OrdersService;
 import cs3773.application.views.MainLayout;
+
+import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
@@ -69,8 +73,19 @@ public class OrdersView extends Div implements BeforeEnterObserver {
         add(splitLayout);
 
         // Configure Grid
+        grid.addColumn("id").setHeader("Order ID").setAutoWidth(true);
         grid.addColumn("custId").setAutoWidth(true);
-        grid.addColumn("totalPrice").setAutoWidth(true);
+
+        //Decimal format for currency column
+        final DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(2);
+
+        grid.addColumn(orders -> "$ " + decimalFormat.format(orders.getTotalPrice()))
+                .setAutoWidth(true)
+                .setComparator(Comparator.comparing(Orders::getTotalPrice))
+                .setHeader("Total Price");
+
         grid.addColumn("status").setAutoWidth(true);
         grid.addColumn("discountCode").setAutoWidth(true);
         grid.addColumn("orderDate").setAutoWidth(true);

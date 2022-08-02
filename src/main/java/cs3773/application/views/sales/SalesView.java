@@ -21,9 +21,13 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
+import cs3773.application.data.entity.Item;
 import cs3773.application.data.entity.Sale;
 import cs3773.application.data.service.SaleService;
 import cs3773.application.views.MainLayout;
+
+import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
@@ -70,6 +74,17 @@ public class SalesView extends Div implements BeforeEnterObserver {
         // Configure Grid
         grid.addColumn("itemId").setAutoWidth(true);
         grid.addColumn("percentOff").setAutoWidth(true);
+
+        //Format for percent sign
+        final DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(2);
+
+        grid.addColumn(sale ->decimalFormat.format(sale.getPercentOff()) + " %")
+                .setAutoWidth(true)
+                .setComparator(Comparator.comparing(Sale::getPercentOff))
+                .setHeader("Percent Off");
+
         grid.addColumn("startDate").setAutoWidth(true);
         grid.addColumn("expirationDate").setAutoWidth(true);
         grid.setItems(query -> saleService.list(

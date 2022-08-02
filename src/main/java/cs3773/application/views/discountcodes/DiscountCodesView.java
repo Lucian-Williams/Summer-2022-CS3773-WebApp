@@ -9,6 +9,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
@@ -22,8 +23,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
 import cs3773.application.data.entity.DiscountCode;
+import cs3773.application.data.entity.Item;
 import cs3773.application.data.service.DiscountCodeService;
 import cs3773.application.views.MainLayout;
+
+import java.text.DecimalFormat;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.security.RolesAllowed;
@@ -72,6 +77,16 @@ public class DiscountCodesView extends Div implements BeforeEnterObserver {
         grid.addColumn("code").setAutoWidth(true);
         grid.addColumn("percentOff").setAutoWidth(true);
         grid.addColumn("maxDollarAmount").setAutoWidth(true);
+        //Decimal format for currency column
+        final DecimalFormat decimalFormat = new DecimalFormat();
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(2);
+
+        grid.addColumn(discountCode -> "$ " + decimalFormat.format(discountCode.getMaxDollarAmount()))
+                .setAutoWidth(true)
+                .setComparator(Comparator.comparing(DiscountCode::getMaxDollarAmount))
+                .setHeader("Max Dollar Amount");
+
         grid.addColumn("status").setAutoWidth(true);
         grid.addColumn("expirationDate").setAutoWidth(true);
         grid.setItems(query -> discountCodeService.list(
@@ -93,12 +108,11 @@ public class DiscountCodesView extends Div implements BeforeEnterObserver {
         binder = new BeanValidationBinder<>(DiscountCode.class);
 
         // Bind fields. This is where you'd define e.g. validation rules
-        binder.forField(code).withConverter(new StringToIntegerConverter("Only numbers are allowed")).bind("code");
+        //binder.forField(code).withConverter(new StringToIntegerConverter("Only numbers are allowed")).bind("code");
         binder.forField(percentOff).withConverter(new StringToIntegerConverter("Only numbers are allowed"))
                 .bind("percentOff");
         binder.forField(maxDollarAmount).withConverter(new StringToIntegerConverter("Only numbers are allowed"))
                 .bind("maxDollarAmount");
-        binder.forField(status).withConverter(new StringToIntegerConverter("Only numbers are allowed")).bind("status");
 
         binder.bindInstanceFields(this);
 
@@ -157,6 +171,7 @@ public class DiscountCodesView extends Div implements BeforeEnterObserver {
         code = new TextField("Code");
         percentOff = new TextField("Percent Off");
         maxDollarAmount = new TextField("Max Dollar Amount");
+        maxDollarAmount.setPrefixComponent(new Icon("vaadin", "dollar"));
         status = new TextField("Status");
         expirationDate = new DatePicker("Expiration Date");
         Component[] fields = new Component[]{code, percentOff, maxDollarAmount, status, expirationDate};

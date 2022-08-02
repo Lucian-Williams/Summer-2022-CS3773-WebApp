@@ -22,6 +22,8 @@ import cs3773.application.views.discountcodes.DiscountCodesView;
 import cs3773.application.views.items.ItemsView;
 import cs3773.application.views.orders.OrdersView;
 import cs3773.application.views.sales.SalesView;
+import cs3773.application.views.users.UserView;
+
 import java.util.Optional;
 
 /**
@@ -145,6 +147,8 @@ public class MainLayout extends AppLayout {
                 new MenuItemInfo("Discount Codes", "la la-money-bill", DiscountCodesView.class), //
 
                 new MenuItemInfo("Sales", "la la-money-bill", SalesView.class), //
+
+                new MenuItemInfo("Users", "la la-user", UserView.class)
 
         };
     }
