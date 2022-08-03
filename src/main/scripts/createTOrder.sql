@@ -4,7 +4,7 @@ CREATE TABLE `TOrder` (
   `id`              integer     PRIMARY KEY,
   `custId`          integer     NOT NULL,
   `totalPriceCents` integer     NOT NULL,
-  `status`          text        NOT NULL,
+  `status`          integer     NOT NULL,
   `discountCode`    text        DEFAULT NULL,
   `orderDt`         text        NOT NULL,
   `deliverDt`       text        DEFAULT NULL,

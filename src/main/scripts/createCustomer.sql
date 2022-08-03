@@ -6,6 +6,5 @@ CREATE TABLE `Customer` (
   `state`           text        DEFAULT NULL, 
   `birthDt`         text        DEFAULT NULL,
   `creatDt`         text        NOT NULL,
-  `status`          text        NOT NULL DEFAULT 'ACTIVE',
   `gender`          text        DEFAULT 'U'
 );
